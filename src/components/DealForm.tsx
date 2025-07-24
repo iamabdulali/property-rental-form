@@ -25,19 +25,27 @@ export default function DealForm({ onCalculate }: Props) {
   });
   const model: DealModelType[] = watch("model").map((o) => o) || [];
 
-  const labelStyle = "block text-base mb-1 font-medium text-[#112956]";
+  const labelStyle =
+    "block sm:text-base text-sm mb-1 font-medium text-[#112956]";
   const inputStyle =
     "w-full px-4 py-2 border border-gray-300 rounded-md  text-[#112956]";
 
+  const preventInvalidKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["e", "E", "+", "-"].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
   return (
     <>
       <form
         onSubmit={handleSubmit(onCalculate)}
-        className="bg-white p-6 rounded-lg shadow-md space-y-4 w-6/12"
+        className="bg-white p-6 rounded-lg shadow-md space-y-4 lg:w-2xl w-full"
       >
-        <h2 className="text-2xl font-semibold text-[#112956]">Inputs</h2>
+        <h2 className="sm:text-2xl text-xl font-semibold text-[#112956]">
+          Inputs
+        </h2>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid lg:grid-cols-2 gap-4">
           <div>
             <label htmlFor="propertyAddress" className={labelStyle}>
               Property Address
@@ -55,10 +63,14 @@ export default function DealForm({ onCalculate }: Props) {
               Monthly Rental Payment to Landlord
             </label>
             <input
-              {...register("monthlyRental", { required: true })}
+              {...register("monthlyRental", {
+                required: true,
+                min: 0,
+              })}
               type="number"
               className={inputStyle}
               id="monthlyRental"
+              onKeyDown={preventInvalidKeys}
             />
           </div>
 
@@ -103,10 +115,11 @@ export default function DealForm({ onCalculate }: Props) {
               Referral Amount
             </label>
             <input
-              {...register("referralAmount", { required: true })}
+              {...register("referralAmount", { required: true, min: 0 })}
               type="number"
               className={inputStyle}
               id="referralAmount"
+              onKeyDown={preventInvalidKeys}
             />
           </div>
 
@@ -143,10 +156,14 @@ export default function DealForm({ onCalculate }: Props) {
                   Local Housing Allowance
                 </label>
                 <input
-                  {...register("localHousingAllowance", { required: true })}
+                  {...register("localHousingAllowance", {
+                    required: true,
+                    min: 0,
+                  })}
                   type="number"
                   className={inputStyle}
                   id="localHousingAllowance"
+                  onKeyDown={preventInvalidKeys}
                 />
               </div>
 
@@ -155,10 +172,11 @@ export default function DealForm({ onCalculate }: Props) {
                   Incentive Amount
                 </label>
                 <input
-                  {...register("incentiveAmount", { required: true })}
+                  {...register("incentiveAmount", { required: true, min: 0 })}
                   type="number"
                   className={inputStyle}
                   id="incentiveAmount"
+                  onKeyDown={preventInvalidKeys}
                 />
               </div>
             </>
@@ -170,9 +188,10 @@ export default function DealForm({ onCalculate }: Props) {
                 Nightly Let Rate
               </label>
               <input
-                {...register("nightlyLetRate", { required: true })}
+                {...register("nightlyLetRate", { required: true, min: 0 })}
                 type="number"
                 className={inputStyle}
+                onKeyDown={preventInvalidKeys}
                 id="nightlyLetRate"
               />
             </div>
@@ -185,10 +204,14 @@ export default function DealForm({ onCalculate }: Props) {
                   Market Monthly Rental
                 </label>
                 <input
-                  {...register("marketMonthlyRental", { required: true })}
+                  {...register("marketMonthlyRental", {
+                    required: true,
+                    min: 0,
+                  })}
                   type="number"
                   className={inputStyle}
                   id="marketMonthlyRental"
+                  onKeyDown={preventInvalidKeys}
                 />
               </div>
 
@@ -197,9 +220,10 @@ export default function DealForm({ onCalculate }: Props) {
                   Management Fee
                 </label>
                 <input
-                  {...register("managementFee", { required: true })}
+                  {...register("managementFee", { required: true, min: 0 })}
                   type="number"
                   className={inputStyle}
+                  onKeyDown={preventInvalidKeys}
                   id="managementFee"
                 />
               </div>
@@ -209,7 +233,7 @@ export default function DealForm({ onCalculate }: Props) {
 
         <button
           type="submit"
-          className=" ml-auto block bg-[#053158] hover:bg-[#0759a2] text-white font-medium py-2 px-4 rounded-md transition"
+          className=" ml-auto cursor-pointer block bg-[#053158] hover:bg-[#0759a2] text-white font-medium py-2 px-4 rounded-md transition"
         >
           Calculate
         </button>

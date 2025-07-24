@@ -1,45 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DealForm from "./components/DealForm";
-import type { DealFormValues, DealResult } from "./types/dealTypes";
+import type { DealFormValues, DealResult, Settings } from "./types/dealTypes";
 import ResultsDisplay from "./components/Results";
 import { logo } from "./assets/index.ts";
-import { calculatePRS } from "./utils/utils.ts";
+import {
+  calculateNightlyLet,
+  calculatePrivateGuaranteed,
+  calculatePRS,
+  fetchSettings,
+} from "./utils/utils.ts";
 
 function App() {
-  const [results, setResults] = useState<any>();
+  const [results, setResults] = useState<DealResult>();
   const [values, setValues] = useState<DealFormValues>();
+  const [settings, setSettings] = useState<Settings>();
 
   const handleCalculate = (values: DealFormValues) => {
     setValues(values);
-    let calculatedResults: DealResult = {
-      profitBeforeRiskManagement: 0,
-      profitAfterRiskManagement: 0,
-      suggestedPaymentToLandlord: 0,
-      amountToBorrow: 0,
+
+    const results: DealResult = {
+      PRS: calculatePRS(values, settings),
+      "Nightly Let": calculateNightlyLet(values, settings),
+      "Private Guaranteed": calculatePrivateGuaranteed(values),
     };
 
-    // Assuming 'values.model' specifies the type of model (PRS, Nightly Let, etc.)
-    if (values.model.includes("PRS")) {
-      calculatedResults = calculatePRS(values);
-    }
-    // You can add more model calculations here (for Nightly Let, Private Guaranteed, etc.)
-
-    setResults(calculatedResults);
-
-    console.log(calculatedResults);
+    setResults(results);
   };
 
+  async function fetchSetting() {
+    const tableData = await fetchSettings();
+    setSettings(tableData);
+  }
+
+  useEffect(() => {
+    fetchSetting();
+  }, [settings]);
+
   return (
-    <div className="min-h-screen bg-[#FDF9F6] p-8">
+    <div className="min-h-screen bg-[#FDF9F6] sm:p-8 p-4">
       <div className="flex mb-6 items-center justify-center gap-3">
-        <img src={logo} alt="logo" />
-        <p className="text-3xl font-bold  text-center text-[#112956]">
-          Clearstone Homes Property Deal
-        </p>
+        <img src={logo} alt="logo" className="w-[350px] mb-4" />
       </div>
-      <div className="flex flex-col items-start md:flex-row gap-6 justify-center">
+      <div className="flex lg:flex-row flex-col items-start gap-6 justify-center">
         <DealForm onCalculate={handleCalculate} />
-        <ResultsDisplay values={values!} results={results} />
+        <ResultsDisplay values={values!} results={results!} />
       </div>
     </div>
   );

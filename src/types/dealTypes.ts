@@ -16,8 +16,25 @@ export interface DealFormValues {
 export type DealModelType = "PRS" | "Nightly Let" | "Private Guaranteed";
 
 export interface DealResult {
-  profitBeforeRiskManagement?: number;
-  profitAfterRiskManagement?: number;
-  suggestedPaymentToLandlord?: number;
-  amountToBorrow?: number;
+  PRS: {
+    profitBeforeRiskManagement?: number;
+    profitAfterRiskManagement?: number;
+    suggestedPaymentToLandlord?: number;
+    amountToBorrow?: number;
+  };
+  "Nightly Let": {
+    profitBeforeRiskManagement?: number;
+    profitAfterRiskManagement?: number;
+    suggestedPaymentToLandlord?: number;
+    amountToBorrow?: number;
+  };
+  "Private Guaranteed": {
+    profit?: number;
+  };
+}
+
+export interface Settings {
+  numberOfMonthsCovered: number;
+  percentLastMonthPayment: number;
+  monthsBuffer: number;
 }
